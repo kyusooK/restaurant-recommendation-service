@@ -1,5 +1,5 @@
 package restaurantrecommendationservice.domain;
 ...수정된 코드... 
-public void setRestaurant(String restaurantName) { this.restaurantName = restaurantName; }
+public class Order { public void setRestaurant(String restaurantName) { this.restaurantName = restaurantName; }
 
-...수정된 코드...
+...수정된 코드...}
