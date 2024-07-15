@@ -12,7 +12,7 @@ import restaurantrecommendationservice.infra.AbstractEvent;
 public class OrderPlaced extends AbstractEvent {
 
     private String orderId;
-    private Restaurant restaurant;
+    private String restaurantName;
     private Address deliveryAddress;
 
     public OrderPlaced(Order aggregate) {

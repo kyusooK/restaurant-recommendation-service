@@ -17,12 +17,12 @@ public class Order {
     @Id
     private String orderId;
 
-    private Restaurant restaurant;
+    private String restaurantName;
 
     private Address deliveryAddress;
 
     @Embedded
-    private RestaurantId restaurantId;
+    private String restaurantId;
 
     @PostPersist
     public void onPostPersist() {
@@ -33,7 +33,7 @@ public class Order {
     @PrePersist
     public void onPrePersist() {
         // 비즈니스 로직 추가
-        if (this.restaurant == null || this.deliveryAddress == null) {
+        if (this.restaurantName == null || this.deliveryAddress == null) {
             throw new IllegalArgumentException("All fields must be supplied");
         }
     }

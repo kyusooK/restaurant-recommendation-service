@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class PlaceOrderCommand {
 
-    private Restaurant restaurant;
+    private String restaurantName;
     private Address deliveryAddress;
 }
