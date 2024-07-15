@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enhanced-address-input
+  labels:
+    app: enhanced-address-input
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enhanced-address-input
+  template:
+    metadata:
+      labels:
+        app: enhanced-address-input
+    spec:
+      containers:
+        - name: enhanced-address-input
+          image: "username/enhanced-address-input:latest"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5

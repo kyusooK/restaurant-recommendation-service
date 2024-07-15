@@ -1,0 +1,171 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: improved-restaurant-search
+  labels:
+    app: improved-restaurant-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: improved-restaurant-search
+  template:
+    metadata:
+      labels:
+        app: improved-restaurant-search
+    spec:
+      containers:
+        - name: improved-restaurant-search
+          image: username/improved-restaurant-search:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplified-order-process
+  labels:
+    app: simplified-order-process
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simplified-order-process
+  template:
+    metadata:
+      labels:
+        app: simplified-order-process
+    spec:
+      containers:
+        - name: simplified-order-process
+          image: username/simplified-order-process:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enhanced-address-input
+  labels:
+    app: enhanced-address-input
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enhanced-address-input
+  template:
+    metadata:
+      labels:
+        app: enhanced-address-input
+    spec:
+      containers:
+        - name: enhanced-address-input
+          image: username/enhanced-address-input:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: improved-restaurant-search
+  labels:
+    app: improved-restaurant-search
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: improved-restaurant-search
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: simplified-order-process
+  labels:
+    app: simplified-order-process
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: simplified-order-process
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: enhanced-address-input
+  labels:
+    app: enhanced-address-input
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: enhanced-address-input
+
