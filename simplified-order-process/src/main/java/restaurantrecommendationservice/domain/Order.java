@@ -31,7 +31,12 @@ public class Order {
     }
 
     @PrePersist
-    public void onPrePersist() {}
+    public void onPrePersist() {
+        // 비즈니스 로직 추가
+        if (this.restaurant == null || this.deliveryAddress == null) {
+            throw new IllegalArgumentException('All fields must be supplied');
+        }
+    }
 
     public static OrderRepository repository() {
         OrderRepository orderRepository = SimplifiedOrderProcessApplication.applicationContext.getBean(

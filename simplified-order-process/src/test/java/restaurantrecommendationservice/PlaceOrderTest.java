@@ -1,10 +1,11 @@
-
 package restaurantrecommendationservice;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,10 +20,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MimeTypeUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import restaurantrecommendationservice.config.kafka.KafkaProcessor;
 import restaurantrecommendationservice.domain.*;
 
@@ -30,72 +27,66 @@ import restaurantrecommendationservice.domain.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PlaceOrderTest {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(CommandTest.class);
-   
-   @Autowired
-   private KafkaProcessor processor;
-   @Autowired
-   private MessageCollector messageCollector;
-   @Autowired
-   private ApplicationContext applicationContext;
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        CommandTest.class
+    );
 
-   @Autowired
-   public OrderRepository repository;
+    @Autowired
+    private KafkaProcessor processor;
 
-   @Test
-   @SuppressWarnings("unchecked")
-   public void test0() {
+    @Autowired
+    private MessageCollector messageCollector;
 
-      //given:  
-      Order existingEntity = new Order();
+    @Autowired
+    private ApplicationContext applicationContext;
 
-      existingEntity.setOrderId("주문ID");
-      existingEntity.setRestaurant([object Object]);
-      existingEntity.setDeliveryAddress([object Object]);
-      existingEntity.setRestaurantId("레스토랑 ID");
+    @Autowired
+    public OrderRepository repository;
 
-      repository.save(existingEntity);
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test0() {
+        //given:
+        Order existingEntity = new Order();
 
-      //when:  
+        existingEntity.setOrderId("주문ID");
+        existingEntity.setRestaurant(new Restaurant()); // [object Object]를 적절한 자바 객체로 변경
+        existingEntity.setDeliveryAddress(new Address()); // [object Object]를 적절한 자바 객체로 변경
+        existingEntity.setRestaurantId("레스토랑 ID");
 
-  
-      
-      try {
+        repository.save(existingEntity);
 
+        //when:
 
-      Order newEntity = new Order();
+        try {
+            Order newEntity = new Order();
 
-         newEntity.setRestaurant([object Object]);
-         newEntity.setDeliveryAddress([object Object]);
+            newEntity.setRestaurant(new Restaurant()); // [object Object]를 적절한 자바 객체로 변경
+            newEntity.setDeliveryAddress(new Address()); // [object Object]를 적절한 자바 객체로 변경
 
-      repository.save(newEntity);
+            repository.save(newEntity);
 
+            //then:
 
-   
-           
+            Message<String> received = (Message<String>) messageCollector
+                .forChannel(processor.outboundTopic())
+                .poll();
 
-         //then:
+            assertNotNull("Resulted event must be published", received);
 
-         Message<String> received = (Message<String>) messageCollector.forChannel(processor.outboundTopic()).poll();
+            OrderPlaced outputEvent = objectMapper.readValue(
+                received.getPayload(),
+                OrderPlaced.class
+            );
 
-         assertNotNull("Resulted event must be published", received);
+            LOGGER.info("Response received: {}", received.getPayload());
 
-         OrderPlaced outputEvent = objectMapper.readValue(received.getPayload(), OrderPlaced.class);
-
-
-         LOGGER.info("Response received: {}", received.getPayload());
-
-         assertEquals(outputEvent.getOrderId(), "주문ID");
-         assertEquals(outputEvent.getRestaurant(), [object Object]);
-         assertEquals(outputEvent.getDeliveryAddress(), [object Object]);
-
-
-      } catch (JsonProcessingException e) {
-         // TODO Auto-generated catch block
-         assertTrue("exception", false);
-      }
-
-     
-   }
-
+            assertEquals(outputEvent.getOrderId(), "주문ID");
+            assertEquals(outputEvent.getRestaurant(), new Restaurant()); // [object Object]를 적절한 자바 객체로 변경
+            assertEquals(outputEvent.getDeliveryAddress(), new Address()); // [object Object]를 적절한 자바 객체로 변경
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            assertTrue("exception", false);
+        }
+    }
 }
