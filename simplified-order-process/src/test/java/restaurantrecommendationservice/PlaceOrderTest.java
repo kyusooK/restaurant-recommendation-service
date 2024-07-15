@@ -28,7 +28,7 @@ import restaurantrecommendationservice.domain.*;
 public class PlaceOrderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
-        CommandTest.class
+        PlaceOrderTest.class
     );
 
     @Autowired
@@ -50,8 +50,8 @@ public class PlaceOrderTest {
         Order existingEntity = new Order();
 
         existingEntity.setOrderId("주문ID");
-        existingEntity.setRestaurant(new Restaurant()); // [object Object]를 적절한 자바 객체로 변경
-        existingEntity.setDeliveryAddress(new Address()); // [object Object]를 적절한 자바 객체로 변경
+        existingEntity.setRestaurant(null);
+        existingEntity.setDeliveryAddress(new Address());
         existingEntity.setRestaurantId("레스토랑 ID");
 
         repository.save(existingEntity);
@@ -61,8 +61,8 @@ public class PlaceOrderTest {
         try {
             Order newEntity = new Order();
 
-            newEntity.setRestaurant(new Restaurant()); // [object Object]를 적절한 자바 객체로 변경
-            newEntity.setDeliveryAddress(new Address()); // [object Object]를 적절한 자바 객체로 변경
+            newEntity.setRestaurant(null);
+            newEntity.setDeliveryAddress(new Address());
 
             repository.save(newEntity);
 
@@ -74,7 +74,7 @@ public class PlaceOrderTest {
 
             assertNotNull("Resulted event must be published", received);
 
-            OrderPlaced outputEvent = objectMapper.readValue(
+            OrderPlaced outputEvent = ObjectMapper.readValue(
                 received.getPayload(),
                 OrderPlaced.class
             );
@@ -82,8 +82,8 @@ public class PlaceOrderTest {
             LOGGER.info("Response received: {}", received.getPayload());
 
             assertEquals(outputEvent.getOrderId(), "주문ID");
-            assertEquals(outputEvent.getRestaurant(), new Restaurant()); // [object Object]를 적절한 자바 객체로 변경
-            assertEquals(outputEvent.getDeliveryAddress(), new Address()); // [object Object]를 적절한 자바 객체로 변경
+            assertEquals(outputEvent.getRestaurant(), null);
+            assertEquals(outputEvent.getDeliveryAddress(), new Address());
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             assertTrue("exception", false);
